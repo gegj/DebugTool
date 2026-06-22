@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.10.0")]
-[assembly: AssemblyFileVersion("1.1.10.0")]
-[assembly: AssemblyInformationalVersion("1.1.10")]
+[assembly: AssemblyVersion("1.1.11.0")]
+[assembly: AssemblyFileVersion("1.1.11.0")]
+[assembly: AssemblyInformationalVersion("1.1.11")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.10";
+        private const string AppVersion = "1.1.11";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -134,15 +134,36 @@ namespace DebugTool
             root.Controls.Add(BuildF32Panel(), 0, 0);
             root.Controls.Add(BuildRemoPanel(), 0, 1);
 
+            var statusHost = new Panel();
+            statusHost.Tag = "bg";
+            statusHost.Dock = DockStyle.Fill;
+            statusHost.BackColor = _bg;
+            root.Controls.Add(statusHost, 0, 2);
+
+            var statusFrame = new RoundedPanel();
+            statusFrame.Tag = "status-frame";
+            statusFrame.Left = ContentLeft(statusHost);
+            statusFrame.Top = 3;
+            statusFrame.Width = ContentWidth;
+            statusFrame.Height = 34;
+            statusFrame.Anchor = AnchorStyles.Top;
+            statusFrame.BackColor = _bg;
+            statusFrame.FillColor = _bg2;
+            statusFrame.BorderColor = _border;
+            statusFrame.Radius = 8;
+            statusHost.Controls.Add(statusFrame);
+            TrackCentered(statusHost, statusFrame);
+
             _infoLabel = new Label();
             _infoLabel.Tag = "status";
             _infoLabel.Dock = DockStyle.Fill;
+            _infoLabel.Margin = new Padding(8, 0, 8, 0);
             _infoLabel.BackColor = _bg2;
             _infoLabel.ForeColor = _text2;
             _infoLabel.Text = "就绪";
             _infoLabel.TextAlign = ContentAlignment.MiddleCenter;
             _infoLabel.Font = new Font("Microsoft YaHei UI", 8.25F);
-            root.Controls.Add(_infoLabel, 0, 2);
+            statusFrame.Controls.Add(_infoLabel);
         }
 
         private Control BuildF32Panel()
@@ -497,6 +518,17 @@ namespace DebugTool
             {
                 control.BackColor = _bg2;
                 control.ForeColor = _text2;
+            }
+            else if (tag == "status-frame")
+            {
+                control.BackColor = _bg;
+                if (control is RoundedPanel)
+                {
+                    RoundedPanel roundedPanel = (RoundedPanel)control;
+                    roundedPanel.FillColor = _bg2;
+                    roundedPanel.BorderColor = _border;
+                    roundedPanel.Invalidate();
+                }
             }
             else if (tag == "border")
             {
