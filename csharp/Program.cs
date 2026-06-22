@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.2.0")]
-[assembly: AssemblyFileVersion("1.1.2.0")]
-[assembly: AssemblyInformationalVersion("1.1.2")]
+[assembly: AssemblyVersion("1.1.3.0")]
+[assembly: AssemblyFileVersion("1.1.3.0")]
+[assembly: AssemblyInformationalVersion("1.1.3")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.2";
+        private const string AppVersion = "1.1.3";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -100,7 +100,7 @@ namespace DebugTool
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            ClientSize = new Size(380, 640);
+            ClientSize = new Size(380, 656);
             BackColor = _bg;
             Font = new Font("Microsoft YaHei UI", 9F);
 
@@ -122,9 +122,9 @@ namespace DebugTool
             root.Padding = new Padding(16, 6, 16, 0);
             root.ColumnCount = 1;
             root.RowCount = 3;
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 318));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 324));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 284));
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
             Controls.Add(root);
 
             root.Controls.Add(BuildF32Panel(), 0, 0);
@@ -137,7 +137,7 @@ namespace DebugTool
             _infoLabel.ForeColor = _text2;
             _infoLabel.Text = "就绪";
             _infoLabel.TextAlign = ContentAlignment.MiddleCenter;
-            _infoLabel.Font = new Font("Microsoft YaHei UI", 8.5F);
+            _infoLabel.Font = new Font("Microsoft YaHei UI", 8.25F);
             root.Controls.Add(_infoLabel, 0, 2);
         }
 
@@ -166,7 +166,7 @@ namespace DebugTool
             AddWideButton(panel, "▶  开启 Telnet", _accent, DoTelnet, ref y);
             AddWideButton(panel, "★  开启 Telnet + Debug", _amber, DoAll, ref y);
             AddWideButton(panel, "■  关闭 Telnet", _text2, DoDisable, ref y);
-            AddWideButton(panel, "↻  立即重启设备", _red, DoReboot, ref y);
+            AddWideButton(panel, "↻  重启设备", _red, DoReboot, ref y);
             return panel;
         }
 
@@ -194,7 +194,7 @@ namespace DebugTool
             AddSmallButton(row, "获取", FetchRemoImei);
 
             AddWideButton(panel, "★  开启 REMO Debug", _amber, DoXxremoDebug, ref y);
-            AddWideButton(panel, "↻  立即重启设备", _red, DoRemoReboot, ref y);
+            AddWideButton(panel, "↻  重启设备", _red, DoRemoReboot, ref y);
             return panel;
         }
 
@@ -750,7 +750,7 @@ namespace DebugTool
 
                     if (!string.IsNullOrWhiteSpace(f32Imei) && !string.IsNullOrWhiteSpace(remoImei))
                     {
-                        UpdateInfo("F32/F30BPRO: " + f32Imei + " / REMO: " + remoImei, _accent);
+                        UpdateInfo("F32: " + f32Imei + Environment.NewLine + "REMO: " + remoImei, _accent);
                     }
                     else if (!string.IsNullOrWhiteSpace(f32Imei))
                     {
@@ -1595,9 +1595,15 @@ namespace DebugTool
             }
 
             Rectangle textRect = new Rectangle(12, 0, Width - 18, Height);
+            TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
             if (TextAlign == ContentAlignment.MiddleCenter)
             {
                 textRect = ClientRectangle;
+                flags |= TextFormatFlags.HorizontalCenter;
+            }
+            else
+            {
+                flags |= TextFormatFlags.Left;
             }
 
             TextRenderer.DrawText(
@@ -1606,7 +1612,7 @@ namespace DebugTool
                 Font,
                 textRect,
                 ForeColor,
-                TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis
+                flags
             );
         }
 
