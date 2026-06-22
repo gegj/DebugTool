@@ -1,5 +1,5 @@
 {
-  "version": "1.1.6",
+  "version": "1.1.7",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "优化按钮和输入框圆角绘制细节"
+  "notes": "优化界面绘制和操作按钮忙碌状态"
 }

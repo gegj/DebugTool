@@ -63,7 +63,7 @@ JSON 格式：
 
 ```json
 {
-  "version": "1.1.6",
+  "version": "1.1.7",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
   "notes": "更新说明"
 }
@@ -76,8 +76,8 @@ JSON 格式：
 仓库已配置 GitHub Actions。推送版本 tag 后会自动在 GitHub Windows 环境编译并发布 Release：
 
 ```bat
-git tag v1.1.6
-git push origin v1.1.6
+git tag v1.1.7
+git push origin v1.1.7
 ```
 
 发布前请先把 `csharp/Program.cs` 中的 `AppVersion` 和 Assembly 版本同步改成同一版本。

@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.6.0")]
-[assembly: AssemblyFileVersion("1.1.6.0")]
-[assembly: AssemblyInformationalVersion("1.1.6")]
+[assembly: AssemblyVersion("1.1.7.0")]
+[assembly: AssemblyFileVersion("1.1.7.0")]
+[assembly: AssemblyInformationalVersion("1.1.7")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.6";
+        private const string AppVersion = "1.1.7";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -343,6 +343,9 @@ namespace DebugTool
             button.Text = text;
             button.BackColor = backColor;
             button.ForeColor = foreColor;
+            button.ParentBackColor = _bg;
+            button.BorderColor = _border;
+            button.HoverBackColor = _border;
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
             button.Cursor = Cursors.Hand;
@@ -1103,6 +1106,11 @@ namespace DebugTool
         private void SetBusy(bool busy)
         {
             _busy = busy;
+            foreach (Button button in _buttons)
+            {
+                button.Enabled = !busy;
+                button.Invalidate();
+            }
         }
 
         private void UpdateInfo(string text, Color color)
@@ -1566,7 +1574,11 @@ namespace DebugTool
             }
 
             Color fill = BackColor;
-            if (_pressed)
+            if (!Enabled)
+            {
+                fill = ControlPaint.Light(BackColor, 0.08f);
+            }
+            else if (_pressed)
             {
                 fill = ControlPaint.Dark(HoverBackColor, 0.03f);
             }
@@ -1576,7 +1588,7 @@ namespace DebugTool
             }
 
             Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
-            using (System.Drawing.Drawing2D.GraphicsPath path = CreateRoundPath(rect, Radius))
+            using (System.Drawing.Drawing2D.GraphicsPath path = UiPainter.CreateRoundPath(rect, Radius))
             using (SolidBrush brush = new SolidBrush(fill))
             using (Pen pen = new Pen(BorderColor))
             {
@@ -1601,22 +1613,11 @@ namespace DebugTool
                 Text,
                 Font,
                 textRect,
-                ForeColor,
+                Enabled ? ForeColor : ControlPaint.Light(ForeColor, 0.5f),
                 flags
             );
         }
 
-        private static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
-        {
-            int diameter = radius * 2;
-            var path = new System.Drawing.Drawing2D.GraphicsPath();
-            path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
-            path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
-            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
-            path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
     }
 
     internal sealed class RoundedPanel : Panel
@@ -1648,7 +1649,7 @@ namespace DebugTool
             }
 
             Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
-            using (System.Drawing.Drawing2D.GraphicsPath path = CreateRoundPath(rect, Radius))
+            using (System.Drawing.Drawing2D.GraphicsPath path = UiPainter.CreateRoundPath(rect, Radius))
             using (SolidBrush brush = new SolidBrush(FillColor))
             using (Pen pen = new Pen(BorderColor))
             {
@@ -1658,8 +1659,11 @@ namespace DebugTool
 
             base.OnPaint(e);
         }
+    }
 
-        private static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
+    internal static class UiPainter
+    {
+        public static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
         {
             int diameter = radius * 2;
             var path = new System.Drawing.Drawing2D.GraphicsPath();
