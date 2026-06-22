@@ -1,11 +1,26 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 chcp 65001 >nul
 
+set "NO_PAUSE="
+if /i "%~1"=="/nopause" set "NO_PAUSE=1"
+
 color 0B
-set "ROOT=%~dp0.."
-set "OUT=%USERPROFILE%\Desktop"
+
+pushd "%~dp0.." >nul 2>nul
+if errorlevel 1 (
+    set "ERROR_MESSAGE=无法定位项目根目录。"
+    goto fail
+)
+set "ROOT=%CD%"
+popd >nul
+
+for /f "usebackq delims=" %%I in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Desktop')"`) do set "OUT=%%I"
+if not defined OUT set "OUT=%USERPROFILE%\Desktop"
+if not exist "%OUT%" mkdir "%OUT%" >nul 2>nul
+
 set "EXE=%OUT%\DebugTool.exe"
+set "LOG=%OUT%\DebugTool_build.log"
 set "CSC64=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 set "CSC32=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe"
 
@@ -16,23 +31,24 @@ if exist "%CSC64%" (
 )
 
 if not exist "%CSC%" (
-    color 0C
-    echo [错误] 未找到 csc.exe，请确认已安装 .NET Framework 4.x。
-    color 07
-    pause
-    exit /b 1
+    set "ERROR_MESSAGE=未找到 csc.exe，请确认已安装 .NET Framework 4.x。"
+    goto fail
 )
 
 if not exist "%ROOT%\logo.ico" (
-    color 0C
-    echo [错误] 未找到 logo.ico。
-    color 07
-    pause
-    exit /b 1
+    set "ERROR_MESSAGE=未找到 logo.ico。"
+    goto fail
+)
+
+if not exist "%ROOT%\csharp\Program.cs" (
+    set "ERROR_MESSAGE=未找到 csharp\Program.cs。"
+    goto fail
 )
 
 echo [信息] 正在生成桌面调试版 DebugTool.exe...
+echo [信息] 项目目录: "%ROOT%"
 echo [信息] 输出路径: "%EXE%"
+echo [信息] 日志路径: "%LOG%"
 
 "%CSC%" ^
     /nologo ^
@@ -47,17 +63,29 @@ echo [信息] 输出路径: "%EXE%"
     /reference:System.Drawing.dll ^
     /reference:System.Net.Http.dll ^
     /reference:System.Windows.Forms.dll ^
-    "%ROOT%\csharp\Program.cs"
+    "%ROOT%\csharp\Program.cs" >"%LOG%" 2>&1
 
 if errorlevel 1 (
     color 0C
-    echo [错误] 生成失败。
-    color 07
-    pause
-    exit /b 1
+    echo [错误] 生成失败，详细信息如下：
+    type "%LOG%"
+    set "EXIT_CODE=1"
+    goto finish
 )
 
 color 0A
 echo [完成] 已生成: "%EXE%"
+echo [完成] 编译日志: "%LOG%"
+set "EXIT_CODE=0"
+goto finish
+
+:fail
+color 0C
+echo [错误] %ERROR_MESSAGE%
+set "EXIT_CODE=1"
+goto finish
+
+:finish
 color 07
-pause
+if not defined NO_PAUSE pause
+exit /b %EXIT_CODE%
