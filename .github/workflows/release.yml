@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, for example 1.0.8"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $version = "${{ inputs.version }}"
+          } else {
+            $version = "${{ github.ref_name }}" -replace '^[vV]', ''
+          }
+
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Version must look like 1.0.8, got: $version"
+          }
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+
+      - name: Build
+        shell: cmd
+        run: csharp\build_ci.bat
+
+      - name: Generate latest.json
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $latest = [ordered]@{
+            version = $version
+            url = "https://github.com/${{ github.repository }}/releases/latest/download/DebugTool.exe"
+            notes = "发布版本 $version"
+          }
+          $latest | ConvertTo-Json -Depth 3 | Set-Content -Path latest.json -Encoding UTF8
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: DebugTool ${{ steps.version.outputs.version }}
+          body: |
+            DebugTool ${{ steps.version.outputs.version }}
+
+            下载 DebugTool.exe 后直接运行即可。
+          files: |
+            csharp/bin/DebugTool.exe
+            latest.json

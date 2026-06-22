@@ -1,5 +1,5 @@
 {
   "version": "1.0.7",
-  "url": "https://github.com/gegj/DebugTool/raw/refs/heads/main/csharp/bin/DebugTool.exe",
+  "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
   "notes": "新增系统深浅色实时自适应，整理项目文档"
 }
