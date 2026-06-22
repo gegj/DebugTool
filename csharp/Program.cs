@@ -43,7 +43,7 @@ namespace DebugTool
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
         private const string AppVersion = "1.0.7";
-        private const string UpdateJsonUrl = "https://pub-af9d006da1914de6a0c61c166370a2d0.r2.dev/adb/latest.json";
+        private const string UpdateJsonUrl = "https://raw.githubusercontent.com/gegj/DebugTool/refs/heads/main/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
         private const int WmSettingChange = 0x001A;
