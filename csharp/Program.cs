@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.4.0")]
-[assembly: AssemblyFileVersion("1.1.4.0")]
-[assembly: AssemblyInformationalVersion("1.1.4")]
+[assembly: AssemblyVersion("1.1.5.0")]
+[assembly: AssemblyFileVersion("1.1.5.0")]
+[assembly: AssemblyInformationalVersion("1.1.5")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.4";
+        private const string AppVersion = "1.1.5";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -330,10 +330,10 @@ namespace DebugTool
             frame.Top = top;
             frame.Width = width;
             frame.Height = height;
-            frame.BackColor = _bg2;
+            frame.BackColor = _bg;
             frame.Paint += delegate(object sender, PaintEventArgs args)
             {
-                DrawRoundedBorder(args.Graphics, frame.ClientRectangle, _border, 8);
+                DrawRoundedBox(args.Graphics, frame.ClientRectangle, _bg2, _border, 8);
             };
             return frame;
         }
@@ -458,7 +458,7 @@ namespace DebugTool
             }
             else if (tag == "input-frame")
             {
-                control.BackColor = _bg2;
+                control.BackColor = _bg;
             }
             else if (tag == "status")
             {
@@ -520,6 +520,19 @@ namespace DebugTool
             using (Pen pen = new Pen(color))
             {
                 graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.DrawPath(pen, path);
+            }
+        }
+
+        private static void DrawRoundedBox(Graphics graphics, Rectangle bounds, Color fillColor, Color borderColor, int radius)
+        {
+            Rectangle rect = new Rectangle(bounds.Left, bounds.Top, bounds.Width - 1, bounds.Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = RoundedRect(rect, radius))
+            using (SolidBrush brush = new SolidBrush(fillColor))
+            using (Pen pen = new Pen(borderColor))
+            {
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.FillPath(brush, path);
                 graphics.DrawPath(pen, path);
             }
         }
@@ -1574,6 +1587,11 @@ namespace DebugTool
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            Color parentBackColor = Parent == null ? SystemColors.Control : Parent.BackColor;
+            using (SolidBrush parentBrush = new SolidBrush(parentBackColor))
+            {
+                e.Graphics.FillRectangle(parentBrush, ClientRectangle);
+            }
 
             Color fill = BackColor;
             if (_pressed)
