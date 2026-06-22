@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.14.0")]
-[assembly: AssemblyFileVersion("1.1.14.0")]
-[assembly: AssemblyInformationalVersion("1.1.14")]
+[assembly: AssemblyVersion("1.1.15.0")]
+[assembly: AssemblyFileVersion("1.1.15.0")]
+[assembly: AssemblyInformationalVersion("1.1.15")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.14";
+        private const string AppVersion = "1.1.15";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -567,7 +567,6 @@ namespace DebugTool
                 RoundedPanel roundedPanel = (RoundedPanel)control;
                 roundedPanel.FillColor = _bg2;
                 roundedPanel.BorderColor = _border;
-                roundedPanel.Invalidate();
             }
         }
 
@@ -582,22 +581,27 @@ namespace DebugTool
 
         private RouterClient MakeClient()
         {
-            var client = new RouterClient(_hostBox.Text);
-            if (client.Host != _hostBox.Text.Trim())
-            {
-                _hostBox.Text = client.Host;
-            }
-            return client;
+            return MakeClientFromBox(_hostBox);
         }
 
         private RouterClient MakeRemoClient()
         {
-            var client = new RouterClient(_remoHostBox.Text);
-            if (client.Host != _remoHostBox.Text.Trim())
+            return MakeClientFromBox(_remoHostBox);
+        }
+
+        private RouterClient MakeClientFromBox(TextBox box)
+        {
+            var client = new RouterClient(box.Text);
+            if (client.Host != box.Text.Trim())
             {
-                _remoHostBox.Text = client.Host;
+                box.Text = client.Host;
             }
             return client;
+        }
+
+        private bool Confirm(string message)
+        {
+            return MessageBox.Show(this, message, "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
         private void BeginUpdateCheck()
@@ -906,7 +910,7 @@ namespace DebugTool
             {
                 return;
             }
-            if (MessageBox.Show(this, confirmMessage, "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!Confirm(confirmMessage))
             {
                 return;
             }
@@ -957,7 +961,7 @@ namespace DebugTool
             {
                 return;
             }
-            if (confirm && MessageBox.Show(this, "确定立即重启设备吗？", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (confirm && !Confirm("确定立即重启设备吗？"))
             {
                 return;
             }
@@ -996,7 +1000,7 @@ namespace DebugTool
             {
                 return;
             }
-            if (MessageBox.Show(this, "确定开启 REMO Debug 吗？", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!Confirm("确定开启 REMO Debug 吗？"))
             {
                 return;
             }
@@ -1048,7 +1052,7 @@ namespace DebugTool
             {
                 return;
             }
-            if (MessageBox.Show(this, "确定立即重启 REMO 设备吗？", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!Confirm("确定立即重启 REMO 设备吗？"))
             {
                 return;
             }
@@ -1563,6 +1567,10 @@ namespace DebugTool
     {
         private bool _hover;
         private bool _pressed;
+        private Color _borderColor;
+        private Color _hoverBackColor;
+        private Color _parentBackColor;
+        private int _radius;
 
         public ModernButton()
         {
@@ -1579,10 +1587,29 @@ namespace DebugTool
             Radius = 8;
         }
 
-        public Color BorderColor { get; set; }
-        public Color HoverBackColor { get; set; }
-        public Color ParentBackColor { get; set; }
-        public int Radius { get; set; }
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; Invalidate(); }
+        }
+
+        public Color HoverBackColor
+        {
+            get { return _hoverBackColor; }
+            set { _hoverBackColor = value; Invalidate(); }
+        }
+
+        public Color ParentBackColor
+        {
+            get { return _parentBackColor; }
+            set { _parentBackColor = value; Invalidate(); }
+        }
+
+        public int Radius
+        {
+            get { return _radius; }
+            set { _radius = value; Invalidate(); }
+        }
 
         protected override void OnMouseEnter(EventArgs e)
         {
@@ -1670,6 +1697,10 @@ namespace DebugTool
 
     internal sealed class RoundedPanel : Panel
     {
+        private Color _fillColor;
+        private Color _borderColor;
+        private int _radius;
+
         public RoundedPanel()
         {
             SetStyle(
@@ -1684,9 +1715,23 @@ namespace DebugTool
             Radius = 8;
         }
 
-        public Color FillColor { get; set; }
-        public Color BorderColor { get; set; }
-        public int Radius { get; set; }
+        public Color FillColor
+        {
+            get { return _fillColor; }
+            set { _fillColor = value; Invalidate(); }
+        }
+
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; Invalidate(); }
+        }
+
+        public int Radius
+        {
+            get { return _radius; }
+            set { _radius = value; Invalidate(); }
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {

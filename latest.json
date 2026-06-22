@@ -1,5 +1,5 @@
 {
-  "version": "1.1.14",
+  "version": "1.1.15",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "精简圆角和按钮主题代码"
+  "notes": "精简确认弹窗、客户端创建和自绘控件主题代码"
 }
