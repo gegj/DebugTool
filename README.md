@@ -1,6 +1,6 @@
 # DebugTool
 
-DebugTool 是一个用于中兴随身 WiFi 调试开关的 Windows 轻量工具，提供 F32/F30PRO 和 REMO 两类设备的 IMEI 获取、Debug/Telnet 开关和重启操作。
+DebugTool 是一个用于某兴随身 WiFi 调试开关的 Windows 轻量工具，提供 F32/F30PRO 和 REMO 两类设备的 IMEI 获取、Debug/Telnet 开关和重启操作。
 
 当前主版本为 C# WinForms 轻量版，发布产物为单个 `DebugTool.exe`。
 
@@ -102,5 +102,5 @@ JSON 格式：
 可用于 GitHub 仓库描述：
 
 ```text
-Windows 轻量版中兴随身 WiFi Debug/Telnet 开关工具，支持 F32/F30PRO 与 REMO，内置更新检测和系统主题自适应。
+Windows 轻量版某兴随身 WiFi Debug/Telnet 开关工具，支持 F32/F30PRO 与 REMO，内置更新检测和系统主题自适应。
 ```
