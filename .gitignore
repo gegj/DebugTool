@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+
+csharp/bin/
+
+.vs/
+*.user
+*.suo

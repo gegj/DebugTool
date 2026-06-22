@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
-  "url": "https://pub-af9d006da1914de6a0c61c166370a2d0.r2.dev/adb/DebugTool.exe",
-  "notes": "修复已知问题"
+  "version": "1.0.7",
+  "url": "https://github.com/gegj/DebugTool/raw/refs/heads/main/csharp/bin/DebugTool.exe",
+  "notes": "新增系统深浅色实时自适应，整理项目文档"
 }
