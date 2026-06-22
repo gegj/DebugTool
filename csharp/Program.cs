@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.8.0")]
-[assembly: AssemblyFileVersion("1.1.8.0")]
-[assembly: AssemblyInformationalVersion("1.1.8")]
+[assembly: AssemblyVersion("1.1.7")]
+[assembly: AssemblyFileVersion("1.1.7")]
+[assembly: AssemblyInformationalVersion("1.1.7")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.8";
+        private const string AppVersion = "1.1.7";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -51,9 +51,6 @@ namespace DebugTool
 
         private Color _bg;
         private Color _bg2;
-        private Color _buttonBg;
-        private Color _buttonHover;
-        private Color _buttonFilledText;
         private Color _accent;
         private Color _red;
         private Color _amber;
@@ -298,7 +295,7 @@ namespace DebugTool
 
         private void AddSmallButton(Control row, string text, Action action)
         {
-            var button = NewButton(text, _accent, _buttonFilledText);
+            var button = NewButton(text, _bg2, _accent);
             button.Tag = "button:accent";
             button.Left = 252;
             button.Top = 0;
@@ -312,7 +309,7 @@ namespace DebugTool
 
         private void AddWideButton(Control parent, string text, Color foreColor, Action action, ref int y)
         {
-            var button = NewButton(text, _buttonBg, foreColor);
+            var button = NewButton(text, _bg2, foreColor);
             button.Tag = ButtonTagForColor(foreColor);
             button.Left = 10;
             button.Top = y;
@@ -395,9 +392,6 @@ namespace DebugTool
             {
                 _bg = Color.FromArgb(19, 22, 30);
                 _bg2 = Color.FromArgb(26, 30, 40);
-                _buttonBg = Color.FromArgb(38, 45, 60);
-                _buttonHover = Color.FromArgb(50, 59, 78);
-                _buttonFilledText = Color.FromArgb(7, 20, 18);
                 _accent = Color.FromArgb(0, 229, 160);
                 _red = Color.FromArgb(255, 85, 85);
                 _amber = Color.FromArgb(245, 166, 35);
@@ -409,9 +403,6 @@ namespace DebugTool
             {
                 _bg = Color.FromArgb(244, 246, 251);
                 _bg2 = Color.White;
-                _buttonBg = Color.FromArgb(232, 238, 247);
-                _buttonHover = Color.FromArgb(221, 230, 242);
-                _buttonFilledText = Color.White;
                 _accent = Color.FromArgb(0, 143, 104);
                 _red = Color.FromArgb(217, 45, 58);
                 _amber = Color.FromArgb(183, 121, 0);
@@ -504,17 +495,17 @@ namespace DebugTool
 
         private void ApplyButtonTheme(Button button, string tag)
         {
-            button.BackColor = ButtonBackColor(tag);
+            button.BackColor = _bg2;
             if (button is ModernButton)
             {
                 ModernButton modernButton = (ModernButton)button;
                 modernButton.ParentBackColor = _bg;
-                modernButton.BorderColor = ButtonBorderColor(tag);
-                modernButton.HoverBackColor = ButtonHoverColor(tag);
+                modernButton.BorderColor = _border;
+                modernButton.HoverBackColor = _border;
             }
             if (tag == "button:accent")
             {
-                button.ForeColor = _buttonFilledText;
+                button.ForeColor = _accent;
             }
             else if (tag == "button:amber")
             {
@@ -528,56 +519,8 @@ namespace DebugTool
             {
                 button.ForeColor = _text2;
             }
-            button.FlatAppearance.BorderColor = ButtonBorderColor(tag);
-            button.FlatAppearance.MouseOverBackColor = ButtonHoverColor(tag);
-        }
-
-        private Color ButtonBackColor(string tag)
-        {
-            if (tag == "button:accent")
-            {
-                return _accent;
-            }
-            if (tag == "button:red")
-            {
-                return BlendColor(_buttonBg, _red, 0.14f);
-            }
-            return _buttonBg;
-        }
-
-        private Color ButtonHoverColor(string tag)
-        {
-            if (tag == "button:accent")
-            {
-                return ControlPaint.Light(_accent, 0.12f);
-            }
-            if (tag == "button:red")
-            {
-                return ControlPaint.Light(_red, 0.18f);
-            }
-            return _buttonHover;
-        }
-
-        private Color ButtonBorderColor(string tag)
-        {
-            if (tag == "button:accent")
-            {
-                return _accent;
-            }
-            if (tag == "button:red")
-            {
-                return _red;
-            }
-            return _border;
-        }
-
-        private static Color BlendColor(Color baseColor, Color overlayColor, float amount)
-        {
-            amount = Math.Max(0f, Math.Min(1f, amount));
-            int r = (int)(baseColor.R + (overlayColor.R - baseColor.R) * amount);
-            int g = (int)(baseColor.G + (overlayColor.G - baseColor.G) * amount);
-            int b = (int)(baseColor.B + (overlayColor.B - baseColor.B) * amount);
-            return Color.FromArgb(baseColor.A, r, g, b);
+            button.FlatAppearance.BorderColor = _border;
+            button.FlatAppearance.MouseOverBackColor = _border;
         }
 
         protected override void WndProc(ref Message message)
