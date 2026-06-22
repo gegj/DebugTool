@@ -40,8 +40,44 @@ jobs:
           "tag=v$version" >> $env:GITHUB_OUTPUT
 
       - name: Build
-        shell: cmd
-        run: csharp\build_ci.bat
+        shell: pwsh
+        run: |
+          $root = (Get-Location).Path
+          $out = Join-Path $root "csharp\bin"
+          $exe = Join-Path $out "DebugTool.exe"
+          $icon = Join-Path $root "logo.ico"
+          $source = Join-Path $root "csharp\Program.cs"
+          $csc64 = Join-Path $env:WINDIR "Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          $csc32 = Join-Path $env:WINDIR "Microsoft.NET\Framework\v4.0.30319\csc.exe"
+
+          if (Test-Path $csc64) {
+            $csc = $csc64
+          } elseif (Test-Path $csc32) {
+            $csc = $csc32
+          } else {
+            throw "csc.exe not found."
+          }
+
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          & $csc @(
+            "/nologo",
+            "/target:winexe",
+            "/platform:anycpu",
+            "/optimize+",
+            "/win32icon:$icon",
+            "/out:$exe",
+            "/reference:System.dll",
+            "/reference:System.Core.dll",
+            "/reference:System.Data.dll",
+            "/reference:System.Drawing.dll",
+            "/reference:System.Net.Http.dll",
+            "/reference:System.Windows.Forms.dll",
+            $source
+          )
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       - name: Generate latest.json
         shell: pwsh

@@ -45,19 +45,11 @@ Windows 10/11 通常已经具备运行环境。若无法启动，请安装 .NET 
 
 ## 构建
 
-不需要安装 .NET SDK。项目使用 Windows 自带 C# 编译器构建：
+本项目不再保留本地构建产物，也不在本地手动构建 EXE。
 
-```bat
-csharp\build.bat
-```
+发布新版时推送版本 tag，由 GitHub Actions 在 GitHub Windows 环境自动编译并发布 `DebugTool.exe`。
 
-构建结果：
-
-```text
-csharp\bin\DebugTool.exe
-```
-
-构建时需要根目录存在 `logo.ico`，它会被编入 EXE；发布时只需要分发 `DebugTool.exe`。
+`logo.ico` 会在 GitHub 构建时编入 EXE；发布后只需要下载 `DebugTool.exe`。
 
 ## 更新检测
 
@@ -103,10 +95,7 @@ latest.json
 .
 ├── ai_studio_code.py          # Python 原版
 ├── csharp
-│   ├── Program.cs             # C# WinForms 轻量版源码
-│   ├── build.bat              # 构建脚本
-│   └── bin
-│       └── DebugTool.exe      # 构建产物
+│   └── Program.cs             # C# WinForms 轻量版源码
 ├── docs
 │   ├── 使用说明.md
 │   └── 发布说明.md
