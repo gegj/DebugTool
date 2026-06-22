@@ -85,7 +85,7 @@ jobs:
           $version = "${{ steps.version.outputs.version }}"
           $latest = [ordered]@{
             version = $version
-            url = "https://github.com/${{ github.repository }}/releases/latest/download/DebugTool.exe"
+            url = "https://gh-proxy.org/https://github.com/${{ github.repository }}/releases/latest/download/DebugTool.exe"
             notes = "发布版本 $version"
           }
           $latest | ConvertTo-Json -Depth 3 | Set-Content -Path latest.json -Encoding UTF8
