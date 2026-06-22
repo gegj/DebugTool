@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.13.0")]
-[assembly: AssemblyFileVersion("1.1.13.0")]
-[assembly: AssemblyInformationalVersion("1.1.13")]
+[assembly: AssemblyVersion("1.1.14.0")]
+[assembly: AssemblyFileVersion("1.1.14.0")]
+[assembly: AssemblyInformationalVersion("1.1.14")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.13";
+        private const string AppVersion = "1.1.14";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -338,7 +338,7 @@ namespace DebugTool
 
         private void AddSmallButton(Control row, string text, Action action)
         {
-            var button = NewButton(text, _bg2, _accent);
+            var button = NewButton(text, _accent);
             button.Tag = "button:accent";
             button.Left = ContentWidth - ImeiButtonWidth;
             button.Top = 0;
@@ -352,7 +352,7 @@ namespace DebugTool
 
         private void AddWideButton(Control parent, string text, Color foreColor, Action action, ref int y)
         {
-            var button = NewButton(text, _bg2, foreColor);
+            var button = NewButton(text, foreColor);
             button.Tag = ButtonTagForColor(foreColor);
             button.Left = ContentLeft(parent);
             button.Top = y;
@@ -381,21 +381,15 @@ namespace DebugTool
             return frame;
         }
 
-        private Button NewButton(string text, Color backColor, Color foreColor)
+        private Button NewButton(string text, Color foreColor)
         {
             var button = new ModernButton();
             button.Text = text;
-            button.BackColor = backColor;
-            button.ForeColor = foreColor;
-            button.ParentBackColor = _bg;
-            button.BorderColor = _border;
-            button.HoverBackColor = _border;
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
             button.Cursor = Cursors.Hand;
             button.Font = new Font("Microsoft YaHei UI", 9.2F, FontStyle.Bold);
-            button.FlatAppearance.BorderColor = _border;
-            button.FlatAppearance.MouseOverBackColor = _border;
+            ApplyButtonTheme(button, ButtonTagForColor(foreColor));
             return button;
         }
 
@@ -505,14 +499,7 @@ namespace DebugTool
             }
             else if (tag == "input-frame")
             {
-                control.BackColor = _bg;
-                if (control is RoundedPanel)
-                {
-                    RoundedPanel roundedPanel = (RoundedPanel)control;
-                    roundedPanel.FillColor = _bg2;
-                    roundedPanel.BorderColor = _border;
-                    roundedPanel.Invalidate();
-                }
+                ApplyRoundedPanelTheme(control);
             }
             else if (tag == "status")
             {
@@ -521,14 +508,7 @@ namespace DebugTool
             }
             else if (tag == "status-frame")
             {
-                control.BackColor = _bg;
-                if (control is RoundedPanel)
-                {
-                    RoundedPanel roundedPanel = (RoundedPanel)control;
-                    roundedPanel.FillColor = _bg2;
-                    roundedPanel.BorderColor = _border;
-                    roundedPanel.Invalidate();
-                }
+                ApplyRoundedPanelTheme(control);
             }
             else if (tag == "border")
             {
@@ -577,6 +557,18 @@ namespace DebugTool
             }
             button.FlatAppearance.BorderColor = _border;
             button.FlatAppearance.MouseOverBackColor = _border;
+        }
+
+        private void ApplyRoundedPanelTheme(Control control)
+        {
+            control.BackColor = _bg;
+            if (control is RoundedPanel)
+            {
+                RoundedPanel roundedPanel = (RoundedPanel)control;
+                roundedPanel.FillColor = _bg2;
+                roundedPanel.BorderColor = _border;
+                roundedPanel.Invalidate();
+            }
         }
 
         protected override void WndProc(ref Message message)
