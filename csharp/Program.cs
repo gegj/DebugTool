@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
-[assembly: AssemblyInformationalVersion("1.1.0")]
+[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyFileVersion("1.1.1.0")]
+[assembly: AssemblyInformationalVersion("1.1.1")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.0";
+        private const string AppVersion = "1.1.1";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -100,7 +100,7 @@ namespace DebugTool
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            ClientSize = new Size(365, 585);
+            ClientSize = new Size(380, 640);
             BackColor = _bg;
             Font = new Font("Microsoft YaHei UI", 9F);
 
@@ -122,8 +122,8 @@ namespace DebugTool
             root.Padding = new Padding(16, 6, 16, 0);
             root.ColumnCount = 1;
             root.RowCount = 3;
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 282));
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 245));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 318));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 284));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
             Controls.Add(root);
 
@@ -245,16 +245,19 @@ namespace DebugTool
         {
             var box = new TextBox();
             box.Tag = "entry";
-            box.Left = 10;
-            box.Top = y;
-            box.Width = 308;
-            box.Height = 25;
+            box.Left = 18;
+            box.Top = y + 6;
+            box.Width = 292;
+            box.Height = 20;
             box.Text = value;
             box.BackColor = _bg2;
             box.ForeColor = _text;
-            box.BorderStyle = BorderStyle.FixedSingle;
-            parent.Controls.Add(box);
-            y += 31;
+            box.BorderStyle = BorderStyle.None;
+            box.Font = new Font("Microsoft YaHei UI", 9.5F);
+            Panel frame = NewInputFrame(10, y, 328, 34);
+            frame.Controls.Add(box);
+            parent.Controls.Add(frame);
+            y += 40;
             return box;
         }
 
@@ -264,11 +267,11 @@ namespace DebugTool
             row.Tag = "bg";
             row.Left = 10;
             row.Top = y;
-            row.Width = 308;
-            row.Height = 28;
+            row.Width = 328;
+            row.Height = 36;
             row.BackColor = _bg;
             parent.Controls.Add(row);
-            y += 32;
+            y += 42;
             return row;
         }
 
@@ -276,14 +279,17 @@ namespace DebugTool
         {
             var box = new TextBox();
             box.Tag = "entry";
-            box.Left = 0;
-            box.Top = 0;
-            box.Width = 232;
-            box.Height = 25;
+            box.Left = 8;
+            box.Top = 7;
+            box.Width = 226;
+            box.Height = 20;
             box.BackColor = _bg2;
             box.ForeColor = _text;
-            box.BorderStyle = BorderStyle.FixedSingle;
-            row.Controls.Add(box);
+            box.BorderStyle = BorderStyle.None;
+            box.Font = new Font("Microsoft YaHei UI", 9.5F);
+            Panel frame = NewInputFrame(0, 0, 242, 34);
+            frame.Controls.Add(box);
+            row.Controls.Add(frame);
             return box;
         }
 
@@ -291,10 +297,10 @@ namespace DebugTool
         {
             var button = NewButton(text, _bg2, _accent);
             button.Tag = "button:accent";
-            button.Left = 240;
+            button.Left = 252;
             button.Top = 0;
-            button.Width = 68;
-            button.Height = 25;
+            button.Width = 76;
+            button.Height = 34;
             button.TextAlign = ContentAlignment.MiddleCenter;
             button.Click += delegate { action(); };
             row.Controls.Add(button);
@@ -307,25 +313,41 @@ namespace DebugTool
             button.Tag = ButtonTagForColor(foreColor);
             button.Left = 10;
             button.Top = y;
-            button.Width = 308;
-            button.Height = 28;
+            button.Width = 328;
+            button.Height = 34;
             button.TextAlign = ContentAlignment.MiddleLeft;
             button.Click += delegate { action(); };
             parent.Controls.Add(button);
             _buttons.Add(button);
-            y += 32;
+            y += 40;
+        }
+
+        private Panel NewInputFrame(int left, int top, int width, int height)
+        {
+            var frame = new Panel();
+            frame.Tag = "input-frame";
+            frame.Left = left;
+            frame.Top = top;
+            frame.Width = width;
+            frame.Height = height;
+            frame.BackColor = _bg2;
+            frame.Paint += delegate(object sender, PaintEventArgs args)
+            {
+                DrawRoundedBorder(args.Graphics, frame.ClientRectangle, _border, 8);
+            };
+            return frame;
         }
 
         private Button NewButton(string text, Color backColor, Color foreColor)
         {
-            var button = new Button();
+            var button = new ModernButton();
             button.Text = text;
             button.BackColor = backColor;
             button.ForeColor = foreColor;
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
             button.Cursor = Cursors.Hand;
-            button.Font = new Font("Microsoft YaHei UI", 9F);
+            button.Font = new Font("Microsoft YaHei UI", 9.2F, FontStyle.Bold);
             button.FlatAppearance.BorderColor = _border;
             button.FlatAppearance.MouseOverBackColor = _border;
             return button;
@@ -434,6 +456,10 @@ namespace DebugTool
                 control.BackColor = _bg2;
                 control.ForeColor = _text;
             }
+            else if (tag == "input-frame")
+            {
+                control.BackColor = _bg2;
+            }
             else if (tag == "status")
             {
                 control.BackColor = _bg2;
@@ -461,6 +487,12 @@ namespace DebugTool
         private void ApplyButtonTheme(Button button, string tag)
         {
             button.BackColor = _bg2;
+            if (button is ModernButton)
+            {
+                ModernButton modernButton = (ModernButton)button;
+                modernButton.BorderColor = _border;
+                modernButton.HoverBackColor = _border;
+            }
             if (tag == "button:accent")
             {
                 button.ForeColor = _accent;
@@ -479,6 +511,29 @@ namespace DebugTool
             }
             button.FlatAppearance.BorderColor = _border;
             button.FlatAppearance.MouseOverBackColor = _border;
+        }
+
+        private static void DrawRoundedBorder(Graphics graphics, Rectangle bounds, Color color, int radius)
+        {
+            Rectangle rect = new Rectangle(bounds.Left, bounds.Top, bounds.Width - 1, bounds.Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = RoundedRect(rect, radius))
+            using (Pen pen = new Pen(color))
+            {
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.DrawPath(pen, path);
+            }
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath RoundedRect(Rectangle bounds, int radius)
+        {
+            int diameter = radius * 2;
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
         }
 
         protected override void WndProc(ref Message message)
@@ -1462,6 +1517,110 @@ namespace DebugTool
         public string Version { get; set; }
         public string Ts { get; set; }
         public string RawInfo { get; set; }
+    }
+
+    internal sealed class ModernButton : Button
+    {
+        private bool _hover;
+        private bool _pressed;
+
+        public ModernButton()
+        {
+            SetStyle(
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,
+                true
+            );
+            BorderColor = Color.FromArgb(216, 222, 233);
+            HoverBackColor = Color.FromArgb(216, 222, 233);
+            Radius = 8;
+        }
+
+        public Color BorderColor { get; set; }
+        public Color HoverBackColor { get; set; }
+        public int Radius { get; set; }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            _hover = true;
+            Invalidate();
+            base.OnMouseEnter(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            _hover = false;
+            _pressed = false;
+            Invalidate();
+            base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs mevent)
+        {
+            _pressed = true;
+            Invalidate();
+            base.OnMouseDown(mevent);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs mevent)
+        {
+            _pressed = false;
+            Invalidate();
+            base.OnMouseUp(mevent);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            Color fill = BackColor;
+            if (_pressed)
+            {
+                fill = ControlPaint.Dark(HoverBackColor, 0.03f);
+            }
+            else if (_hover)
+            {
+                fill = HoverBackColor;
+            }
+
+            Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = CreateRoundPath(rect, Radius))
+            using (SolidBrush brush = new SolidBrush(fill))
+            using (Pen pen = new Pen(BorderColor))
+            {
+                e.Graphics.FillPath(brush, path);
+                e.Graphics.DrawPath(pen, path);
+            }
+
+            Rectangle textRect = new Rectangle(12, 0, Width - 18, Height);
+            if (TextAlign == ContentAlignment.MiddleCenter)
+            {
+                textRect = ClientRectangle;
+            }
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                Text,
+                Font,
+                textRect,
+                ForeColor,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis
+            );
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
+        {
+            int diameter = radius * 2;
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
     }
 
     internal sealed class UpdateInfoData
