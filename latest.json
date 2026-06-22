@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "美化输入框和按钮"
+  "notes": "修复 IP 输入框不可见和无法输入的问题"
 }

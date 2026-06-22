@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.1.0")]
-[assembly: AssemblyFileVersion("1.1.1.0")]
-[assembly: AssemblyInformationalVersion("1.1.1")]
+[assembly: AssemblyVersion("1.1.2.0")]
+[assembly: AssemblyFileVersion("1.1.2.0")]
+[assembly: AssemblyInformationalVersion("1.1.2")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.1";
+        private const string AppVersion = "1.1.2";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -245,9 +245,9 @@ namespace DebugTool
         {
             var box = new TextBox();
             box.Tag = "entry";
-            box.Left = 18;
-            box.Top = y + 6;
-            box.Width = 292;
+            box.Left = 8;
+            box.Top = 7;
+            box.Width = 312;
             box.Height = 20;
             box.Text = value;
             box.BackColor = _bg2;
