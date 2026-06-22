@@ -1,5 +1,5 @@
 {
-  "version": "1.1.11",
+  "version": "1.1.13",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "新增本地桌面打包脚本，优化状态栏圆角样式"
+  "notes": "修复底部状态栏圆角背景填充"
 }

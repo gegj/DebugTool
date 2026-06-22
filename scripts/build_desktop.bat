@@ -20,7 +20,6 @@ if not defined OUT set "OUT=%USERPROFILE%\Desktop"
 if not exist "%OUT%" mkdir "%OUT%" >nul 2>nul
 
 set "EXE=%OUT%\DebugTool.exe"
-set "LOG=%OUT%\DebugTool_build.log"
 set "CSC64=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 set "CSC32=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe"
 
@@ -48,7 +47,6 @@ if not exist "%ROOT%\csharp\Program.cs" (
 echo [信息] 正在生成桌面调试版 DebugTool.exe...
 echo [信息] 项目目录: "%ROOT%"
 echo [信息] 输出路径: "%EXE%"
-echo [信息] 日志路径: "%LOG%"
 
 "%CSC%" ^
     /nologo ^
@@ -63,19 +61,17 @@ echo [信息] 日志路径: "%LOG%"
     /reference:System.Drawing.dll ^
     /reference:System.Net.Http.dll ^
     /reference:System.Windows.Forms.dll ^
-    "%ROOT%\csharp\Program.cs" >"%LOG%" 2>&1
+    "%ROOT%\csharp\Program.cs"
 
 if errorlevel 1 (
     color 0C
-    echo [错误] 生成失败，详细信息如下：
-    type "%LOG%"
+    echo [错误] 生成失败。
     set "EXIT_CODE=1"
     goto finish
 )
 
 color 0A
 echo [完成] 已生成: "%EXE%"
-echo [完成] 编译日志: "%LOG%"
 set "EXIT_CODE=0"
 goto finish
 

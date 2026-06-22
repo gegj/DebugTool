@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.11.0")]
-[assembly: AssemblyFileVersion("1.1.11.0")]
-[assembly: AssemblyInformationalVersion("1.1.11")]
+[assembly: AssemblyVersion("1.1.13.0")]
+[assembly: AssemblyFileVersion("1.1.13.0")]
+[assembly: AssemblyInformationalVersion("1.1.13")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.11";
+        private const string AppVersion = "1.1.13";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -151,13 +151,13 @@ namespace DebugTool
             statusFrame.FillColor = _bg2;
             statusFrame.BorderColor = _border;
             statusFrame.Radius = 8;
+            statusFrame.Padding = new Padding(8, 0, 8, 0);
             statusHost.Controls.Add(statusFrame);
             TrackCentered(statusHost, statusFrame);
 
             _infoLabel = new Label();
             _infoLabel.Tag = "status";
             _infoLabel.Dock = DockStyle.Fill;
-            _infoLabel.Margin = new Padding(8, 0, 8, 0);
             _infoLabel.BackColor = _bg2;
             _infoLabel.ForeColor = _text2;
             _infoLabel.Text = "就绪";
