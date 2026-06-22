@@ -1,5 +1,5 @@
 {
-  "version": "1.1.8",
-  "url": "https://gh-proxy.org/https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "更新检测和下载地址使用 GitHub 加速代理"
+  "version": "1.1.9",
+  "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
+  "notes": "更新检测和下载地址恢复 GitHub 直连"
 }
