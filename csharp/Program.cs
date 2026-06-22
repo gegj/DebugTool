@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.5.0")]
-[assembly: AssemblyFileVersion("1.1.5.0")]
-[assembly: AssemblyInformationalVersion("1.1.5")]
+[assembly: AssemblyVersion("1.1.6.0")]
+[assembly: AssemblyFileVersion("1.1.6.0")]
+[assembly: AssemblyInformationalVersion("1.1.6")]
 
 namespace DebugTool
 {
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.5";
+        private const string AppVersion = "1.1.6";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -324,17 +324,16 @@ namespace DebugTool
 
         private Panel NewInputFrame(int left, int top, int width, int height)
         {
-            var frame = new Panel();
+            var frame = new RoundedPanel();
             frame.Tag = "input-frame";
             frame.Left = left;
             frame.Top = top;
             frame.Width = width;
             frame.Height = height;
             frame.BackColor = _bg;
-            frame.Paint += delegate(object sender, PaintEventArgs args)
-            {
-                DrawRoundedBox(args.Graphics, frame.ClientRectangle, _bg2, _border, 8);
-            };
+            frame.FillColor = _bg2;
+            frame.BorderColor = _border;
+            frame.Radius = 8;
             return frame;
         }
 
@@ -459,6 +458,13 @@ namespace DebugTool
             else if (tag == "input-frame")
             {
                 control.BackColor = _bg;
+                if (control is RoundedPanel)
+                {
+                    RoundedPanel roundedPanel = (RoundedPanel)control;
+                    roundedPanel.FillColor = _bg2;
+                    roundedPanel.BorderColor = _border;
+                    roundedPanel.Invalidate();
+                }
             }
             else if (tag == "status")
             {
@@ -490,6 +496,7 @@ namespace DebugTool
             if (button is ModernButton)
             {
                 ModernButton modernButton = (ModernButton)button;
+                modernButton.ParentBackColor = _bg;
                 modernButton.BorderColor = _border;
                 modernButton.HoverBackColor = _border;
             }
@@ -511,42 +518,6 @@ namespace DebugTool
             }
             button.FlatAppearance.BorderColor = _border;
             button.FlatAppearance.MouseOverBackColor = _border;
-        }
-
-        private static void DrawRoundedBorder(Graphics graphics, Rectangle bounds, Color color, int radius)
-        {
-            Rectangle rect = new Rectangle(bounds.Left, bounds.Top, bounds.Width - 1, bounds.Height - 1);
-            using (System.Drawing.Drawing2D.GraphicsPath path = RoundedRect(rect, radius))
-            using (Pen pen = new Pen(color))
-            {
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                graphics.DrawPath(pen, path);
-            }
-        }
-
-        private static void DrawRoundedBox(Graphics graphics, Rectangle bounds, Color fillColor, Color borderColor, int radius)
-        {
-            Rectangle rect = new Rectangle(bounds.Left, bounds.Top, bounds.Width - 1, bounds.Height - 1);
-            using (System.Drawing.Drawing2D.GraphicsPath path = RoundedRect(rect, radius))
-            using (SolidBrush brush = new SolidBrush(fillColor))
-            using (Pen pen = new Pen(borderColor))
-            {
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                graphics.FillPath(brush, path);
-                graphics.DrawPath(pen, path);
-            }
-        }
-
-        private static System.Drawing.Drawing2D.GraphicsPath RoundedRect(Rectangle bounds, int radius)
-        {
-            int diameter = radius * 2;
-            var path = new System.Drawing.Drawing2D.GraphicsPath();
-            path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
-            path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
-            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
-            path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
-            path.CloseFigure();
-            return path;
         }
 
         protected override void WndProc(ref Message message)
@@ -1548,11 +1519,13 @@ namespace DebugTool
             );
             BorderColor = Color.FromArgb(216, 222, 233);
             HoverBackColor = Color.FromArgb(216, 222, 233);
+            ParentBackColor = SystemColors.Control;
             Radius = 8;
         }
 
         public Color BorderColor { get; set; }
         public Color HoverBackColor { get; set; }
+        public Color ParentBackColor { get; set; }
         public int Radius { get; set; }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -1587,8 +1560,7 @@ namespace DebugTool
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            Color parentBackColor = Parent == null ? SystemColors.Control : Parent.BackColor;
-            using (SolidBrush parentBrush = new SolidBrush(parentBackColor))
+            using (SolidBrush parentBrush = new SolidBrush(ParentBackColor))
             {
                 e.Graphics.FillRectangle(parentBrush, ClientRectangle);
             }
@@ -1632,6 +1604,59 @@ namespace DebugTool
                 ForeColor,
                 flags
             );
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
+        {
+            int diameter = radius * 2;
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+    }
+
+    internal sealed class RoundedPanel : Panel
+    {
+        public RoundedPanel()
+        {
+            SetStyle(
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,
+                true
+            );
+            FillColor = Color.White;
+            BorderColor = Color.FromArgb(216, 222, 233);
+            Radius = 8;
+        }
+
+        public Color FillColor { get; set; }
+        public Color BorderColor { get; set; }
+        public int Radius { get; set; }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            using (SolidBrush parentBrush = new SolidBrush(BackColor))
+            {
+                e.Graphics.FillRectangle(parentBrush, ClientRectangle);
+            }
+
+            Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = CreateRoundPath(rect, Radius))
+            using (SolidBrush brush = new SolidBrush(FillColor))
+            using (Pen pen = new Pen(BorderColor))
+            {
+                e.Graphics.FillPath(brush, path);
+                e.Graphics.DrawPath(pen, path);
+            }
+
+            base.OnPaint(e);
         }
 
         private static System.Drawing.Drawing2D.GraphicsPath CreateRoundPath(Rectangle bounds, int radius)
