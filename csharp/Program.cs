@@ -21,9 +21,9 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.9.0")]
-[assembly: AssemblyFileVersion("1.1.9.0")]
-[assembly: AssemblyInformationalVersion("1.1.9")]
+[assembly: AssemblyVersion("1.1.10.0")]
+[assembly: AssemblyFileVersion("1.1.10.0")]
+[assembly: AssemblyInformationalVersion("1.1.10")]
 
 namespace DebugTool
 {
@@ -42,12 +42,16 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.9";
+        private const string AppVersion = "1.1.10";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
         private const int WmSettingChange = 0x001A;
         private const int WmThemeChanged = 0x031A;
+        private const int ContentWidth = 328;
+        private const int InputPaddingX = 8;
+        private const int ImeiButtonWidth = 76;
+        private const int ImeiButtonGap = 10;
 
         private Color _bg;
         private Color _bg2;
@@ -170,6 +174,20 @@ namespace DebugTool
             return panel;
         }
 
+        private static int ContentLeft(Control parent)
+        {
+            int width = parent.ClientSize.Width > 0 ? parent.ClientSize.Width : ContentWidth;
+            return Math.Max(0, (width - ContentWidth) / 2);
+        }
+
+        private void TrackCentered(Control parent, Control child)
+        {
+            parent.Resize += delegate
+            {
+                child.Left = ContentLeft(parent);
+            };
+        }
+
         private Control BuildRemoPanel()
         {
             var panel = NewSectionPanel();
@@ -211,17 +229,18 @@ namespace DebugTool
         {
             var label = new Label();
             label.Tag = "title";
-            label.Left = 0;
+            label.Left = ContentLeft(parent);
             label.Top = y;
-            label.Width = parent.Width > 0 ? parent.Width : 328;
+            label.Width = ContentWidth;
             label.Height = 34;
             label.Text = text;
             label.TextAlign = ContentAlignment.MiddleCenter;
             label.BackColor = _bg;
             label.ForeColor = _accent;
             label.Font = new Font("Microsoft YaHei UI", size, FontStyle.Bold);
-            label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label.Anchor = AnchorStyles.Top;
             parent.Controls.Add(label);
+            TrackCentered(parent, label);
             y += 38;
         }
 
@@ -229,7 +248,7 @@ namespace DebugTool
         {
             var label = new Label();
             label.Tag = "label";
-            label.Left = 0;
+            label.Left = ContentLeft(parent);
             label.Top = y;
             label.Width = 80;
             label.Height = 20;
@@ -238,6 +257,7 @@ namespace DebugTool
             label.ForeColor = _text2;
             label.TextAlign = ContentAlignment.MiddleLeft;
             parent.Controls.Add(label);
+            TrackCentered(parent, label);
             y += 20;
         }
 
@@ -245,18 +265,19 @@ namespace DebugTool
         {
             var box = new TextBox();
             box.Tag = "entry";
-            box.Left = 8;
+            box.Left = InputPaddingX;
             box.Top = 7;
-            box.Width = 312;
+            box.Width = ContentWidth - InputPaddingX * 2;
             box.Height = 20;
             box.Text = value;
             box.BackColor = _bg2;
             box.ForeColor = _text;
             box.BorderStyle = BorderStyle.None;
             box.Font = new Font("Microsoft YaHei UI", 9.5F);
-            Panel frame = NewInputFrame(10, y, 328, 34);
+            Panel frame = NewInputFrame(ContentLeft(parent), y, ContentWidth, 34);
             frame.Controls.Add(box);
             parent.Controls.Add(frame);
+            TrackCentered(parent, frame);
             y += 40;
             return box;
         }
@@ -265,12 +286,13 @@ namespace DebugTool
         {
             var row = new Panel();
             row.Tag = "bg";
-            row.Left = 10;
+            row.Left = ContentLeft(parent);
             row.Top = y;
-            row.Width = 328;
+            row.Width = ContentWidth;
             row.Height = 36;
             row.BackColor = _bg;
             parent.Controls.Add(row);
+            TrackCentered(parent, row);
             y += 42;
             return row;
         }
@@ -279,15 +301,15 @@ namespace DebugTool
         {
             var box = new TextBox();
             box.Tag = "entry";
-            box.Left = 8;
+            box.Left = InputPaddingX;
             box.Top = 7;
-            box.Width = 226;
+            box.Width = ContentWidth - ImeiButtonWidth - ImeiButtonGap - InputPaddingX * 2;
             box.Height = 20;
             box.BackColor = _bg2;
             box.ForeColor = _text;
             box.BorderStyle = BorderStyle.None;
             box.Font = new Font("Microsoft YaHei UI", 9.5F);
-            Panel frame = NewInputFrame(0, 0, 242, 34);
+            Panel frame = NewInputFrame(0, 0, ContentWidth - ImeiButtonWidth - ImeiButtonGap, 34);
             frame.Controls.Add(box);
             row.Controls.Add(frame);
             return box;
@@ -297,9 +319,9 @@ namespace DebugTool
         {
             var button = NewButton(text, _bg2, _accent);
             button.Tag = "button:accent";
-            button.Left = 252;
+            button.Left = ContentWidth - ImeiButtonWidth;
             button.Top = 0;
-            button.Width = 76;
+            button.Width = ImeiButtonWidth;
             button.Height = 34;
             button.TextAlign = ContentAlignment.MiddleCenter;
             button.Click += delegate { action(); };
@@ -311,13 +333,14 @@ namespace DebugTool
         {
             var button = NewButton(text, _bg2, foreColor);
             button.Tag = ButtonTagForColor(foreColor);
-            button.Left = 10;
+            button.Left = ContentLeft(parent);
             button.Top = y;
-            button.Width = 328;
+            button.Width = ContentWidth;
             button.Height = 34;
             button.TextAlign = ContentAlignment.MiddleLeft;
             button.Click += delegate { action(); };
             parent.Controls.Add(button);
+            TrackCentered(parent, button);
             _buttons.Add(button);
             y += 40;
         }
@@ -359,12 +382,13 @@ namespace DebugTool
         {
             var line = new Panel();
             line.Tag = "border";
-            line.Left = 0;
+            line.Left = ContentLeft(parent);
             line.Top = y + 4;
-            line.Width = 328;
+            line.Width = ContentWidth;
             line.Height = 1;
             line.BackColor = _border;
             parent.Controls.Add(line);
+            TrackCentered(parent, line);
             y += 10;
         }
 

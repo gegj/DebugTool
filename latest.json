@@ -1,5 +1,5 @@
 {
-  "version": "1.1.9",
+  "version": "1.1.10",
   "url": "https://github.com/gegj/DebugTool/releases/latest/download/DebugTool.exe",
-  "notes": "更新检测和下载地址恢复 GitHub 直连"
+  "notes": "优化主界面按钮和输入框内容居中"
 }
