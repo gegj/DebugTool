@@ -64,7 +64,7 @@ csharp\bin\DebugTool.exe
 程序启动时会请求：
 
 ```text
-https://pub-af9d006da1914de6a0c61c166370a2d0.r2.dev/adb/latest.json
+https://raw.githubusercontent.com/gegj/DebugTool/refs/heads/main/latest.json
 ```
 
 JSON 格式：
