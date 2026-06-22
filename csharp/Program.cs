@@ -21,8 +21,8 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("金恩出品")]
 [assembly: AssemblyProduct("DebugTool")]
 [assembly: AssemblyCopyright("Copyright © 金恩出品")]
-[assembly: AssemblyVersion("1.1.3.0")]
-[assembly: AssemblyFileVersion("1.1.3.0")]
+[assembly: AssemblyVersion("1.1.3.1")]
+[assembly: AssemblyFileVersion("1.1.3.1")]
 [assembly: AssemblyInformationalVersion("1.1.3")]
 
 namespace DebugTool
@@ -42,7 +42,7 @@ namespace DebugTool
     {
         private const string AppId = "my.zte.tool.v1";
         private const string AppTitle = "开启Debug调试工具 - 金恩出品";
-        private const string AppVersion = "1.1.3";
+        private const string AppVersion = "1.1.3.1";
         private const string UpdateJsonUrl = "https://github.com/gegj/DebugTool/releases/latest/download/latest.json";
         private const string DefaultHost = "192.168.0.1";
         private const string DefaultRemoHost = "192.168.100.1";
@@ -750,7 +750,7 @@ namespace DebugTool
 
                     if (!string.IsNullOrWhiteSpace(f32Imei) && !string.IsNullOrWhiteSpace(remoImei))
                     {
-                        UpdateInfo("F32: " + f32Imei + Environment.NewLine + "REMO: " + remoImei, _accent);
+                        UpdateInfo("F32/F30Pro: " + f32Imei + Environment.NewLine + "REMO: " + remoImei, _accent);
                     }
                     else if (!string.IsNullOrWhiteSpace(f32Imei))
                     {
